@@ -5,6 +5,11 @@
  */
 package assignement.de1;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,14 +97,14 @@ public class Main {
                     Date dNow1 = cal1.getTime();
                     cal2.add(Calendar.DAY_OF_MONTH, -7);
                     Date dNow2 = cal2.getTime();
-                    
+
                     System.out.println("Danh sach san pham sap het han su dung : ");
                     spList.forEach((sanPham) -> {
                         try {
                             Date date = sdf2.parse(sanPham.getHanSuDung());
                             int compare1 = date.compareTo(dNow1);
                             int compare2 = date.compareTo(dNow2);
-                            
+
                             if (compare1 <= 0 && compare2 >= 0) {
                                 sanPham.display();
                             }
@@ -113,7 +118,7 @@ public class Main {
                     System.out.println("Nhap vao ten san pham can tim : ");
                     String tenSpTempt = scanner.nextLine();
                     tenSpTempt = tenSpTempt.toLowerCase();
-                    
+
                     System.out.println("Kết quả : ");
                     int count = 0;
                     for (int i = 0; i < spList.size(); i++) {
@@ -126,10 +131,133 @@ public class Main {
                     System.out.printf("Số lượng : %d", count);
                     break;
                 case 8:
-                    
+                    List<SanPham> spListCopy = spList;
+                    FileOutputStream fus = null;
+                    ObjectOutputStream oos = null;
+                    try {
+                        //luu danh muc vao file category.dat
+                        fus = new FileOutputStream("category.dat");
+                        oos = new ObjectOutputStream(fus);
+                        oos.writeObject(danhMucList);
+                        
+                        //luu san pham da ban vao file sell.dat
+                        fus = new FileOutputStream("sell.dat");
+                        oos = new ObjectOutputStream(fus);
+                        List<SanPham> listTempt = new ArrayList<>();
+                        spList.forEach((sanPham) -> {
+                            if ("0".equals(sanPham.getNgayBan()) == false) {
+                                listTempt.add(sanPham);
+                                spListCopy.remove(sanPham);
+                            }
+                        });
+                        oos.writeObject(listTempt);
+                        
+                        //luu san pham het han vao file expire.dat
+                        fus = new FileOutputStream("expire.dat");
+                        oos = new ObjectOutputStream(fus);
+                        List<SanPham> listTempt2 = new ArrayList<>();
+                        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy-MM-dd");
+                        Date dNow3 = new Date();
+
+                        spList.forEach((sanPham) -> {
+                            try {
+                                Date date = sdf3.parse(sanPham.getHanSuDung());
+                                if (dNow3.compareTo(date) > 0) {
+                                    listTempt2.add(sanPham);
+                                    spListCopy.remove(sanPham);
+                                }
+                            } catch (ParseException ex) {
+                                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        });
+                        
+                        //luu san pham dat tieu chuan vao file product.dat
+                        oos.writeObject(listTempt2);
+
+                        fus = new FileOutputStream("product.dat");
+                        oos = new ObjectOutputStream(fus);
+                        oos.writeObject(spListCopy);
+                    } catch (IOException e) {
+
+                    } finally {
+                        if (fus != null) {
+                            try {
+                                fus.close();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        if (oos != null) {
+                            try {
+                                fus.close();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
                     break;
                 case 9:
-                    
+                    List<SanPham> spListTempt = new ArrayList<>();
+                    List<DanhMucSanPham> dmListTempt = new ArrayList<>();
+                    FileInputStream fis = null;
+                    ObjectInputStream ois = null;
+                    try {
+                        fis = new FileInputStream("sell.dat");
+                        ois = new ObjectInputStream(fis);
+                        spListTempt = (List<SanPham>) ois.readObject();
+                        spList.addAll(spListTempt);
+                        
+                        fis = new FileInputStream("expire.dat");
+                        ois = new ObjectInputStream(fis);
+                        spListTempt = (List<SanPham>) ois.readObject();
+                        spList.addAll(spListTempt);
+                        
+                        fis = new FileInputStream("product.dat");
+                        ois = new ObjectInputStream(fis);
+                        spListTempt = (List<SanPham>) ois.readObject();
+                        spList.addAll(spListTempt);
+                        
+                        spListTempt.clear();
+                        for (SanPham sp : spList) {
+                            if (!spListTempt.contains(sp)) {
+                                spListTempt.add(sp);
+                            }
+                        }
+                        spList.clear();
+                        spList.addAll(spListTempt);
+                        
+                        fis = new FileInputStream("category.dat");
+                        ois = new ObjectInputStream(fis);
+                        dmListTempt = (List<DanhMucSanPham>) ois.readObject();
+                        
+                        danhMucList.addAll(dmListTempt);
+                        dmListTempt.clear();
+                        
+                        for (DanhMucSanPham dmsp : danhMucList) {
+                            if (!dmListTempt.contains(dmsp)) {
+                                dmListTempt.add(dmsp);
+                            }
+                        }
+                        danhMucList.clear();
+                        danhMucList.addAll(dmListTempt);
+                    } catch(IOException | ClassNotFoundException e) {
+                        
+                    } finally {
+                        if (fis != null) {
+                            try {
+                                fis.close();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                        if (ois != null) {
+                            try {
+                                fis.close();
+                            } catch (IOException ex) {
+                                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        }
+                    }
                     break;
                 case 10:
                     System.out.println("Good Bye !!!");

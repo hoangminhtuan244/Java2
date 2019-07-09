@@ -5,6 +5,7 @@
  */
 package assignement.de1;
 
+import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Consumer;
 
 /**
  *
@@ -41,9 +43,37 @@ public class Test {
 //        
 //        System.out.println(date.compareTo(dNow));
         
-        String s1 = "AcasDDSADA";
-        s1 = s1.toLowerCase();
-        System.out.println(s1);
+//        String s1 = "AcasDDSADA";
+//        s1 = s1.toLowerCase();
+//        System.out.println(s1);
+        // Constructing An ArrayList
+        List<String> listWithDuplicateElements = new ArrayList<String>();
+        listWithDuplicateElements.add("JAVA");
+        listWithDuplicateElements.add("J2EE");
+        listWithDuplicateElements.add("JSP");
+        listWithDuplicateElements.add("SERVLETS");
+        listWithDuplicateElements.add("JAVA");
+        listWithDuplicateElements.add("STRUTS");
+        listWithDuplicateElements.add("JSP");
+ 
+        // Printing listWithDuplicateElements
+        System.out.println("ArrayList With Duplicate Elements :");
+        System.out.println(listWithDuplicateElements);
+ 
+        // Constructing Another ArrayList
+        List<String> listWithoutDuplicateElements = new ArrayList<String>();
+        for (String element : listWithDuplicateElements) {
+            // Check if element not exist in list, perform add element to list
+            if (!listWithoutDuplicateElements.contains(element)) {
+                listWithoutDuplicateElements.add(element);
+            }
+        }
+ 
+        // Printing listWithoutDuplicateElements
+        System.out.println("\nArrayList After Removing Duplicate Elements :");
+        System.out.println(listWithoutDuplicateElements);
+        
+        
 
 //        Calendar cal = Calendar.getInstance();
 //		SimpleDateFormat sdf_yyyyMMdd = new SimpleDateFormat("yyyy/MM/dd");
