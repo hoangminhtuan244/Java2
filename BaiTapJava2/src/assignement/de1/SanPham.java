@@ -5,13 +5,15 @@
  */
 package assignement.de1;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Scanner;
 
 /**
  *
  * @author hlamg
  */
-public class SanPham {
+public class SanPham implements Serializable{
     //mã sản phẩm, mã danh mục, tên sp, giá, ngày nhập, ngày bán, hạn sử dụng, mô tả sản phẩm.
     String maSp;
     String maDm;
@@ -105,7 +107,7 @@ public class SanPham {
         return "SanPham{" + "maSp=" + maSp + ", maDm=" + maDm + ", tenSp=" + tenSp + ", giaSp=" + giaSp + ", ngayNhap=" + ngayNhap + ", ngayBan=" + ngayBan + ", hanSuDung=" + hanSuDung + ", moTa=" + moTa + '}';
     }
     
-    public void input() {
+    public int input(List<SanPham> spList) {
         Scanner scanner = new Scanner(System.in);
         
         System.out.println("Nhap ma san pham : ");
@@ -116,14 +118,25 @@ public class SanPham {
         this.tenSp = scanner.nextLine();
         System.out.println("Nhap gia san pham : ");
         this.giaSp = Integer.parseInt(scanner.nextLine());
-        System.out.println("Nhap ngay nhap san pham : ");
+        System.out.println("Nhap ngay nhap san pham(Year-Month-Day) : ");
         this.ngayNhap = scanner.nextLine();
-        System.out.println("Nhap ngay ban san pham : ");
+        System.out.println("Nhap ngay ban san pham(Year-Month-Day, chua ban thi nhap \"0\") : ");
         this.ngayBan = scanner.nextLine();
-        System.out.println("Nhap han su dung san pham : ");
+        System.out.println("Nhap han su dung san pham(Year-Month-Day) : ");
         this.hanSuDung = scanner.nextLine();
         System.out.println("Nhap mo ta san pham : ");
         this.moTa = scanner.nextLine();
+        
+        if (spList.isEmpty()) {
+            return 1;
+        } else {
+            for (int i = 0; i < spList.size(); i++) {
+                if (this.maSp.equals(spList.get(i).getMaSp()) == true) {
+                    return 0;
+                }
+            }
+        }
+        return 1;
     }
     
     public void display() {

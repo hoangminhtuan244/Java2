@@ -5,15 +5,16 @@
  */
 package assignement.de1;
 
+import java.io.Serializable;
+import java.util.List;
 import java.util.Scanner;
-
-
 
 /**
  *
  * @author hlamg
  */
-public class DanhMucSanPham {
+public class DanhMucSanPham implements Serializable{
+
     String maDm;
     String tenDm;
 
@@ -45,15 +46,30 @@ public class DanhMucSanPham {
     public String toString() {
         return "DanhMucSanPham{" + "maDm=" + maDm + ", tenDm=" + tenDm + '}';
     }
-    
-    public void input() {
+
+    public int input(List<DanhMucSanPham> dmList) {
         Scanner scanner = new Scanner(System.in);
+        String maDmTempt;
+
         System.out.println("Nhap vao ma danh muc : ");
-        this.maDm = scanner.nextLine();
+        maDmTempt = scanner.nextLine();
         System.out.println("Nhap vao ten danh muc : ");
         this.tenDm = scanner.nextLine();
+
+        if (dmList.isEmpty()) {
+            this.maDm = maDmTempt;
+        } else {
+            for (int i = 0; i < dmList.size(); i++) {
+                if (maDmTempt.equals(dmList.get(i).getMaDm()) == true) {
+                    return 0;
+                } else {
+                    this.maDm = maDmTempt;
+                }
+            }
+        }
+        return 1;
     }
-    
+
     public void display() {
         System.out.println(toString());
     }
